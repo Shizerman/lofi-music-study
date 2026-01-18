@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lofi Music Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <video autoplay muted loop id="vibe-video-background"></video>
+
+    <div class="player-card">
+        <div id="song-title-container">
+            <div id="song-progress-bar"></div>
+            <div id="song-title"></div>
+        </div>
+        <div class="music-controls">
+            <button id="shuffle-btn" class="control-btn"><i class="material-icons">shuffle</i></button>
+            <button id="prev-btn" class="control-btn"><i class="material-icons">skip_previous</i></button>
+            <button id="play-pause-btn" class="control-btn"><i class="material-icons">play_arrow</i></button>
+            <button id="next-btn" class="control-btn"><i class="material-icons">skip_next</i></button>
+        </div>
+
+        <div class="volume-control">
+            <i class="material-icons">volume_down</i>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.75">
+            <i class="material-icons">volume_up</i>
+        </div>
+
+        <div class="timer-adjust-controls">
+             <button id="decrease-timer-btn" class="control-btn timer-adjust-btn"><i class="material-icons">remove</i></button>
+             <div id="timer-display">25:00</div>
+             <button id="increase-timer-btn" class="control-btn timer-adjust-btn"><i class="material-icons">add</i></button>
+        </div>
+
+        <div class="pomodoro-controls">
+            <button id="start-timer-btn" class="pomodoro-btn">Start</button>
+            <button id="reset-timer-btn" class="pomodoro-btn">Reset</button>
+        </div>
+
+        <button id="change-vibe-btn" class="vibe-btn">Change Vibe</button>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

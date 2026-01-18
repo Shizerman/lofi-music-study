@@ -1,0 +1,12 @@
+{
+  "name": "lofi-music-player",
+  "version": "1.0.0",
+  "description": "A dynamic lofi music player",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

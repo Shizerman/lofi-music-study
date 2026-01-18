@@ -1,0 +1,203 @@
+/* CSS */
+:root {
+    --primary-color: #FF00FF; /* Neon Magenta */
+    --secondary-color: #00FFFF; /* Cyan */
+    --dark-color: #000000;
+    --card-background: rgba(0, 0, 0, 0.5);
+    --border-radius: 24px;
+    --primary-color-a10: rgba(255, 0, 255, 0.1);
+    --primary-color-a20: rgba(255, 0, 255, 0.2);
+    --secondary-color-a20: rgba(0, 255, 255, 0.2);
+    --secondary-color-a40: rgba(0, 255, 255, 0.4);
+}
+
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--dark-color);
+    color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Prevent scrollbars from the video */
+    position: relative; /* For the noise overlay */
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiGAAABNVBMVEUAAAAzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM3Zk5gAAAAZ3RSTlMAAQIDBAUGCAkKCwwNDxAREhQVFhgZGxweHyAhIiQlJicqLC0uLzAyMzU2Nzg5Ojs8PT5AQkNFR0hKTE5PUVNUVldYWVpbXF5fYGFiY2RlZmdoaWprbG1ucHFyc3R1dnd4eXp7fH1+f4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLExMXGx8jJysvMzc7P0NHS09TV1tfa29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+bNYg+wAAAAlwSFlzAAALEgAACxIB0t1+/AAAApJJREFUeJzt1elfGkEUxfF5IyFiUBAVBRXFBwFBxEdRwcFFRQQ1RBFFxUVRwcFFRRH83/two8/M3N3MbO+9b25m5s1vdpLd5M0/y92VzQY4s//+H9B/gD8jIyMj83xmMjIyMjLz57aMjIyMjDzZrqMjIyMjz4p6Ojo6OvPKnh4dHR0dPemGjY6Ojo48yS8bHR0dHbnzS0ZHR0dHbnzSkZHR0dH/zZ+Mjo6OjjzJz1ZHR0dHbsyfVUdHR0de/OSfT0dHR0eewGdgZ2B35tM/vX/+/Pn7t9/sDgzMAvj585ffvDszsPvwzPz5s/efPZ3Z/fnmF8/u/sHs7M78+fMXz86Ojo6Ozs7s/vzzh3Z2d2b5+fPzs6Ojo7/Z3ZmZ5d89Ozs6Ojqzs/ufmfl3z97+vZmRkf27Z2Z2d2b+3bPs9s78ufPXt/z8+b+MjPzZ+/c/+/Pnsxkf27//s7M7M/Pnz9+/Z+fP/+zs/s/yZ+fPP5/Z/b9n58/szM6f/3N2d/b/nucf2fnzZ/dn+fPZ/dn+2Z2d/Z8d/zN7M/Pnm/2Z2Z/ds/Pnn/39mZmdnb3Z3ZmdP/9n9+cvZ3Z/dm/2dnb+2dn9+f2b/fP/md2b/fn7N/s/y8/s/P+z+zPz55/9+fObzOz+zOzPzZ9fMvsz++f3z+7PzJ/9+fP7t2f2z58//+/s/vz5n5/Zmdn9mf3z85fM/vnz55/9+fP/s/sz+/P3b2d/fn7/Zvfmz58//2z/ZmZ39+cf2f35+z+z/5mdnZ3Z/fnz+7c/y59fMvv/zPz9m9n9/8/s/v//mZnZ3f/Z+f37Nz+zMzM7/2z/7M/s/s/yL3/2L88/M/vnZ/Zn+fd/dn+Wf/b/Z/flz9/8+f1bM/vny5/9+f0bM3syMvM/s/vz+7d/ZmdnZ/ZnZ2Z/ZmZmdv7s/MzMzPz5z+zPzJ/fn93/mf3z85vM/s/y8+cvZvfn/+/M/s/M//nzz+z+zGz/7P5nZ/ZnZmb5//9A/AD4K57uXAAAAABJRU5ErkJggg==');
+    opacity: 0.1;
+    z-index: -99; /* Below the content, above the video */
+}
+
+#vibe-video-background {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    background-size: cover;
+    transition: opacity 0.5s ease-in-out;
+    opacity: 0;
+}
+
+.player-card {
+    position: relative; /* Ensure player is on top of the video */
+    z-index: 1;
+    background: var(--card-background);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--primary-color-a20);
+    padding: 2rem;
+    width: 90%;
+    max-width: 350px;
+    box-shadow: 
+        0 8px 32px 0 rgba(0, 0, 0, 0.37),
+        0 0 20px var(--primary-color-a20), 
+        0 0 40px var(--secondary-color-a20);
+}
+
+#song-title-container {
+    position: relative;
+    border: 1px solid var(--primary-color-a20);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+#song-title {
+    position: relative;
+    z-index: 2;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+    min-height: 1.2em;
+}
+
+#song-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background-color: var(--secondary-color-a20);
+    z-index: 1;
+    transition: width 0.1s linear;
+}
+
+.music-controls, .pomodoro-controls, .volume-control, .timer-adjust-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.control-btn, .vibe-btn, .timer-adjust-btn, .pomodoro-btn {
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.control-btn:hover, .vibe-btn:hover, .timer-adjust-btn:hover, .pomodoro-btn:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+.control-btn:active, .vibe-btn:active, .timer-adjust-btn:active, .pomodoro-btn:active {
+    transform: scale(0.95) translateY(1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.control-btn:hover {
+    color: var(--secondary-color);
+}
+
+.control-btn.shuffle-active {
+    color: var(--secondary-color);
+}
+
+.material-icons {
+    font-size: 36px;
+}
+
+#play-pause-btn .material-icons {
+    font-size: 48px;
+}
+
+.timer-adjust-btn {
+    background: var(--primary-color-a10);
+    border: 1px solid var(--primary-color);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+}
+
+#timer-display {
+    font-size: 3rem;
+    font-weight: 500;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.pomodoro-btn {
+    background: var(--secondary-color-a20);
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
+    padding: 0.5rem 1.5rem;
+    border-radius: 24px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.pomodoro-btn:active {
+    background: var(--secondary-color-a40);
+}
+
+.vibe-btn {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: 16px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.vibe-btn:hover {
+    background: var(--primary-color-a10);
+}
+
+#volume-slider {
+    width: 60%;
+}
+
+@media (max-width: 480px) {
+    .music-controls, .pomodoro-controls, .timer-adjust-controls {
+        flex-direction: row;
+    }
+}
