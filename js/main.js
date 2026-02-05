@@ -1,10 +1,9 @@
-const musicFiles = ["music/123456.mp3","music/Catnip.mp3","music/Forgot my tie.mp3","music/General Liability.mp3","music/Harpsidoodles.mp3","music/Horns that shed a tear.mp3","music/Making a mixtape.mp3","music/Not time.mp3","music/Ode to my last drop of coffee.mp3","music/SRV + Anchorman.mp3","music/Snake bite.mp3","music/Vitamin B3.mp3","music/Wait one more time.mp3","music/Walkie Talkie.mp3","music/adjustable skyline.mp3","music/anxious bus stop.mp3","music/beam me up.mp3","music/beep bop boop.mp3","music/boombox instrumental.mp3","music/city stroll.mp3","music/dizzying rain.mp3","music/everythings anew.mp3","music/flowers in the window.mp3","music/i cant take me off the sand.mp3","music/jazz flute from the window.mp3","music/lamp love.mp3","music/metamorphishize.mp3","music/modem love.mp3","music/never had a beer with you.mp3","music/organicize.mp3","music/piano horn.mp3","music/piano vocals.mp3"];
-const vibeFiles = ["vibes/Gen-4_Turbo_Can_you_0_5x.mp4","vibes/Lo_Fi_Ski_Game_Video_Generation.mp4","vibes/Lofi_Tokyo_Night_Walk_Video.mp4","vibes/Rainy_Day_Window_View_Video.mp4","vibes/Urban_Coffee_Shop_Video_Generation.mp4"];
+const musicFiles = ["music/123456.mp3","music/15 min car ride to work.mp3","music/80's montage.mp3","music/Catnip.mp3","music/Forgot my tie.mp3","music/General Liability.mp3","music/Going on.mp3","music/Harpsidoodles.mp3","music/Horns that shed a tear.mp3","music/If I were a car horn.mp3","music/Making a mixtape.mp3","music/Not time.mp3","music/Ode to my last drop of coffee.mp3","music/SRV + Anchorman.mp3","music/Snake bite.mp3","music/Vitamin B3.mp3","music/Wait one more time.mp3","music/Walkie Talkie.mp3","music/adjustable skyline.mp3","music/anxious bus stop.mp3","music/beam me up.mp3","music/beep bop boop.mp3","music/boombox instrumental.mp3","music/city stroll.mp3","music/coffee turntable.mp3","music/dizzying rain.mp3","music/egg day.mp3","music/everythings anew.mp3","music/flowers in the window.mp3","music/i cant take me off the sand.mp3","music/jazz flute from the window.mp3","music/lamp love.mp3","music/last song too.mp3","music/metamorphishize.mp3","music/midivibes.mp3","music/modem love.mp3","music/never had a beer with you.mp3","music/organicize.mp3","music/piano horn.mp3","music/piano vocals.mp3","music/slow fasting.mp3","music/the news waits for no one.mp3","music/the party must go on, but not like this.mp3","music/whet your whistle.mp3","music/your life in infrared.mp3"];
+const vibeFiles = ["vibes/Gen-4_Turbo_Can_you_0_5x.mp4","vibes/Lo_Fi_Ski_Game_Video_Generation.mp4","vibes/Lofi_Tokyo_Night_Walk_Video.mp4","vibes/Old_TV_News_Broadcast.mp4","vibes/Rainy_Day_Window_View_Video.mp4","vibes/Tropical_Beach_Paradise_Video_Generation.mp4","vibes/Urban_Coffee_Shop_Video_Generation.mp4"];
 
 const playPauseBtn = document.getElementById('play-pause-btn');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
-const shuffleBtn = document.getElementById('shuffle-btn');
 const volumeSlider = document.getElementById('volume-slider');
 const timerDisplay = document.getElementById('timer-display');
 const startTimerBtn = document.getElementById('start-timer-btn');
@@ -22,12 +21,13 @@ const audioPlayer = new Audio();
 let originalTracks = [];
 let tracks = [];
 let currentTrackIndex = 0;
-let isShuffling = false;
 
 // Pomodoro
 let timer;
+let isTimerRunning = false;
 let defaultTime = 1500; // 25 minutes in seconds
 let timeLeft = defaultTime;
+let audioCtx; // For the buzzer
 
 // Vibes
 let vibes = [];
@@ -38,6 +38,20 @@ vibeVideoBackground.addEventListener('error', function(e) {
     console.error("Error details:", e);
 });
 
+// If a song fails to load, skip to the next one
+audioPlayer.addEventListener('error', (e) => {
+    console.error("Error playing audio, skipping to next track:", e);
+    nextTrack();
+});
+
+function shuffleTracks() {
+    tracks = [...originalTracks];
+    for (let i = tracks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tracks[i], tracks[j]] = [tracks[j], tracks[i]];
+    }
+}
+
 function loadPlaylist() {
     if (!musicFiles || musicFiles.length === 0) {
         console.error("No music files found.");
@@ -47,7 +61,8 @@ function loadPlaylist() {
         url: file,
         title: file.split('/').pop().replace('.mp3', '').replace(/_/g, ' ')
     }));
-    tracks = [...originalTracks];
+
+    shuffleTracks(); // Shuffle by default
     const startingTrackIndex = Math.floor(Math.random() * tracks.length);
     loadTrack(startingTrackIndex);
 }
@@ -62,36 +77,8 @@ function loadVibes() {
         name: file.split('/').pop().replace('.mp4', '').replace(/_/g, ' ')
     }));
 
-    // Start with a random vibe
     currentVibeIndex = Math.floor(Math.random() * vibes.length);
-    changeVibe(true); // Pass true to indicate initial load
-}
-
-function shuffleTracks() {
-    let shuffled = [...originalTracks];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    tracks = shuffled;
-}
-
-function toggleShuffle() {
-    isShuffling = !isShuffling;
-    shuffleBtn.classList.toggle('shuffle-active', isShuffling);
-
-    const currentSong = tracks[currentTrackIndex];
-
-    if (isShuffling) {
-        shuffleTracks();
-        const newIndex = tracks.findIndex(track => track.title === currentSong.title);
-        if (newIndex !== -1) {
-            [tracks[currentTrackIndex], tracks[newIndex]] = [tracks[newIndex], tracks[currentTrackIndex]];
-        }
-    } else {
-        tracks = [...originalTracks];
-        currentTrackIndex = tracks.findIndex(track => track.title === currentSong.title);
-    }
+    changeVibe(true);
 }
 
 function updateSongTitle() {
@@ -145,31 +132,64 @@ function updateTimerDisplay() {
     timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
+function playBuzzer() {
+    if (!audioCtx) {
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.error("Web Audio API is not supported in this browser");
+            return;
+        }
+    }
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.type = 'square';
+    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.5);
+}
+
 function startTimer() {
-    clearInterval(timer);
+    isTimerRunning = true;
+    startTimerBtn.textContent = 'Pause';
     timer = setInterval(() => {
         if (timeLeft > 0) {
             timeLeft--;
             updateTimerDisplay();
         } else {
             clearInterval(timer);
-            alert("Pomodoro session finished!");
+            isTimerRunning = false;
+            startTimerBtn.textContent = 'Start';
+            playBuzzer();
         }
     }, 1000);
 }
 
+function pauseTimer() {
+    isTimerRunning = false;
+    startTimerBtn.textContent = 'Start';
+    clearInterval(timer);
+}
+
 function resetTimer() {
     clearInterval(timer);
+    isTimerRunning = false;
+    startTimerBtn.textContent = 'Start';
     timeLeft = defaultTime;
     updateTimerDisplay();
 }
 
 function increaseTimer() {
+    if (isTimerRunning) return; 
     defaultTime += 60;
     resetTimer();
 }
 
 function decreaseTimer() {
+    if (isTimerRunning) return;
     if (defaultTime > 60) {
         defaultTime -= 60;
         resetTimer();
@@ -178,9 +198,7 @@ function decreaseTimer() {
 
 function changeVibe(initialLoad = false) {
     if (vibes.length === 0) return;
-
     vibeVideoBackground.style.opacity = 0;
-
     setTimeout(() => {
         if (!initialLoad) {
             currentVibeIndex = (currentVibeIndex + 1) % vibes.length;
@@ -201,12 +219,17 @@ function updateProgress() {
 
 audioPlayer.addEventListener('timeupdate', updateProgress);
 audioPlayer.addEventListener('ended', nextTrack);
-shuffleBtn.addEventListener('click', toggleShuffle);
 playPauseBtn.addEventListener('click', playPauseTrack);
 prevBtn.addEventListener('click', prevTrack);
 nextBtn.addEventListener('click', nextTrack);
 volumeSlider.addEventListener('input', setVolume);
-startTimerBtn.addEventListener('click', startTimer);
+startTimerBtn.addEventListener('click', () => {
+    if (isTimerRunning) {
+        pauseTimer();
+    } else {
+        startTimer();
+    }
+});
 resetTimerBtn.addEventListener('click', resetTimer);
 increaseTimerBtn.addEventListener('click', increaseTimer);
 decreaseTimerBtn.addEventListener('click', decreaseTimer);
