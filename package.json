@@ -4,7 +4,8 @@
   "description": "A dynamic lofi music player",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "update-files": "node scripts/generate-file-list.js"
   },
   "dependencies": {
     "express": "^4.19.2"

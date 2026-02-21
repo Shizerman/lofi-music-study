@@ -1,9 +1,11 @@
-const musicFiles = ["music/123456.mp3","music/15 min car ride to work.mp3","music/2 for 1 for none.mp3","music/80's montage.mp3","music/Catnip.mp3","music/Forgot my tie.mp3","music/General Liability.mp3","music/Going on.mp3","music/Harpsidoodles.mp3","music/Horns that shed a tear.mp3","music/If I were a car horn.mp3","music/Making a mixtape.mp3","music/My main man Blorg.mp3","music/Not time.mp3","music/Ode to my last drop of coffee.mp3","music/SRV + Anchorman.mp3","music/Snake bite.mp3","music/Vitamin B3.mp3","music/Wait one more time.mp3","music/Walkie Talkie.mp3","music/adjustable skyline.mp3","music/anxious bus stop.mp3","music/beam me up.mp3","music/beep bop boop.mp3","music/boombox instrumental.mp3","music/city stroll.mp3","music/classic.mp3","music/coffee turntable.mp3","music/dizzying rain.mp3","music/edge of the solar system.mp3","music/egg day.mp3","music/everythings anew.mp3","music/flowers in the window.mp3","music/i cant take me off the sand.mp3","music/jazz flute from the window.mp3","music/jet ski thru your heart.mp3","music/lamp love.mp3","music/laser eye surgery.mp3","music/last day of vacation goodbyes.mp3","music/last song too.mp3","music/metamorphishize.mp3","music/midivibes.mp3","music/modem love.mp3","music/never had a beer with you.mp3","music/organicize.mp3","music/our little beach shack.mp3","music/piano horn.mp3","music/piano vocals.mp3","music/slow fasting.mp3","music/the news waits for no one.mp3","music/the party must go on, but not like this.mp3","music/vibin' and thrivin'.mp3","music/we'll be right back after this break.mp3","music/whet your whistle.mp3","music/won't you come back.mp3","music/your life in infrared.mp3"];
-const vibeFiles = ["vibes/Gen-4_Turbo_Can_you_0_5x.mp4","vibes/Lo_Fi_Ski_Game_Video_Generation.mp4","vibes/Lofi_Tokyo_Night_Walk_Video.mp4","vibes/Old_TV_News_Broadcast.mp4","vibes/Rainy_Day_Window_View_Video.mp4","vibes/Tropical_Beach_Paradise_Video_Generation.mp4","vibes/Urban_Coffee_Shop_Video_Generation.mp4"];
+// Music and vibe lists are loaded from file-list.json (or /api/files when using the dev server)
+let musicFiles = [];
+let vibeFiles = [];
 
 const playPauseBtn = document.getElementById('play-pause-btn');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
+const shuffleBtn = document.getElementById('shuffle-btn');
 const volumeSlider = document.getElementById('volume-slider');
 const timerDisplay = document.getElementById('timer-display');
 const startTimerBtn = document.getElementById('start-timer-btn');
@@ -21,6 +23,7 @@ const audioPlayer = new Audio();
 let originalTracks = [];
 let tracks = [];
 let currentTrackIndex = 0;
+let isShuffleOn = true; // Shuffle by default
 
 // Pomodoro
 let timer;
@@ -52,6 +55,24 @@ function shuffleTracks() {
     }
 }
 
+function toggleShuffle() {
+    isShuffleOn = !isShuffleOn;
+    shuffleBtn.classList.toggle('shuffle-active', isShuffleOn);
+    if (isShuffleOn) {
+        shuffleTracks();
+        loadTrack(0);
+        if (!audioPlayer.paused) audioPlayer.play();
+        playPauseBtn.querySelector('.material-icons').textContent = 'pause';
+    } else {
+        const currentUrl = tracks[currentTrackIndex].url;
+        tracks = [...originalTracks];
+        const idx = tracks.findIndex(t => t.url === currentUrl);
+        loadTrack(idx >= 0 ? idx : 0);
+        if (!audioPlayer.paused) audioPlayer.play();
+        playPauseBtn.querySelector('.material-icons').textContent = 'pause';
+    }
+}
+
 function loadPlaylist() {
     if (!musicFiles || musicFiles.length === 0) {
         console.error("No music files found.");
@@ -62,7 +83,8 @@ function loadPlaylist() {
         title: file.split('/').pop().replace('.mp3', '').replace(/_/g, ' ')
     }));
 
-    shuffleTracks(); // Shuffle by default
+    shuffleTracks();
+    shuffleBtn.classList.add('shuffle-active');
     const startingTrackIndex = Math.floor(Math.random() * tracks.length);
     loadTrack(startingTrackIndex);
 }
@@ -222,6 +244,7 @@ audioPlayer.addEventListener('ended', nextTrack);
 playPauseBtn.addEventListener('click', playPauseTrack);
 prevBtn.addEventListener('click', prevTrack);
 nextBtn.addEventListener('click', nextTrack);
+shuffleBtn.addEventListener('click', toggleShuffle);
 volumeSlider.addEventListener('input', setVolume);
 startTimerBtn.addEventListener('click', () => {
     if (isTimerRunning) {
@@ -235,12 +258,33 @@ increaseTimerBtn.addEventListener('click', increaseTimer);
 decreaseTimerBtn.addEventListener('click', decreaseTimer);
 changeVibeBtn.addEventListener('click', () => changeVibe());
 
-// Initial setup
-function initialize() {
+// Load file list from /api/files (dev server) or file-list.json (static), then initialize
+async function fetchFileList() {
+    try {
+        const res = await fetch('/api/files');
+        if (res.ok) {
+            const data = await res.json();
+            return { music: data.music || [], vibes: data.vibes || [] };
+        }
+    } catch (_) {}
+    try {
+        const res = await fetch('file-list.json');
+        if (res.ok) {
+            return await res.json();
+        }
+    } catch (e) {
+        console.error('Could not load file-list.json. Run: npm run update-files', e);
+    }
+    return { music: [], vibes: [] };
+}
+
+function initialize(musicList, vibeList) {
+    musicFiles = musicList || [];
+    vibeFiles = vibeList || [];
     loadPlaylist();
     loadVibes();
     setVolume();
     updateTimerDisplay();
 }
 
-initialize();
+fetchFileList().then(({ music, vibes }) => initialize(music, vibes));
