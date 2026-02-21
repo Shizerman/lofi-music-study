@@ -8,9 +8,11 @@ A simple, elegant, and modern lofi music player with a Pomodoro timer and dynami
 
 *   `index.html`: The main HTML file.
 *   `style.css`: The main stylesheet.
-*   `js/main.js`: The main JavaScript file, which now includes the file lists for music and vibes.
-*   `music/`: A directory containing music files.
-*   `vibes/`: A directory containing video files for backgrounds.
+*   `js/main.js`: The main JavaScript file; loads the track/vibe list from `file-list.json` or (when using the dev server) from `/api/files`.
+*   `file-list.json`: Generated list of music and vibe file paths. Create/update by running `npm run update-files` after adding files.
+*   `scripts/generate-file-list.js`: Node script that scans `music/` and `vibes/` and writes `file-list.json`.
+*   `music/`: A directory containing music files (.mp3).
+*   `vibes/`: A directory containing video files for backgrounds (.mp4).
 
 ## Features
 
@@ -34,12 +36,9 @@ A simple, elegant, and modern lofi music player with a Pomodoro timer and dynami
     *   Glowing shadows on interactive elements.
     *   Smooth transitions for vibe changes.
 
-## Current Task: Dynamic File Loading
+## Dynamic File Loading
 
-**Objective:** Modify the application to dynamically load music and vibes from their respective folders, removing the need for hardcoded file lists.
+The app discovers music and vibes in two ways:
 
-**Steps:**
-
-1.  **Consolidate File Lists:** The `musicFiles` and `vibeFiles` arrays, previously in a separate `js/file-lists.js` file, have been embedded directly into `js/main.js`.
-2.  **Update `index.html`:** The `<script>` tag for `js/file-lists.js` has been removed.
-3.  **Update `js/main.js`:** The hardcoded file lists are now at the top of the file, and the rest of the code uses these arrays to load the music and vibes.
+1. **Dev server (`npm start`):** The server reads `music/` and `vibes/` on each request to `/api/files`. Add new files to those folders and refresh the page—no script needed.
+2. **Static (e.g. GitHub Pages, or opening `index.html`):** The app loads `file-list.json`. After adding or removing files in `music/` or `vibes/`, run **`npm run update-files`** to regenerate `file-list.json`, then commit it if you deploy.
