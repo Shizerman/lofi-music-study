@@ -128,8 +128,18 @@ function playPauseTrack() {
     }
 }
 
+const PREV_RESTART_THRESHOLD_SEC = 5;
+
 function prevTrack() {
     if (tracks.length === 0) return;
+    if (audioPlayer.currentTime > PREV_RESTART_THRESHOLD_SEC) {
+        audioPlayer.currentTime = 0;
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+            playPauseBtn.querySelector('.material-icons').textContent = 'pause';
+        }
+        return;
+    }
     currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
     loadTrack(currentTrackIndex);
     audioPlayer.play();
@@ -257,6 +267,14 @@ resetTimerBtn.addEventListener('click', resetTimer);
 increaseTimerBtn.addEventListener('click', increaseTimer);
 decreaseTimerBtn.addEventListener('click', decreaseTimer);
 changeVibeBtn.addEventListener('click', () => changeVibe());
+
+// Keyboard: Space = play/pause only; prevent default so page doesn't scroll
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        e.preventDefault();
+        playPauseTrack();
+    }
+});
 
 // Load file list from /api/files (dev server) or file-list.json (static), then initialize
 async function fetchFileList() {
