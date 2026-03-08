@@ -21,7 +21,6 @@
             <div id="song-title"></div>
         </div>
         <div class="music-controls">
-            <button id="shuffle-btn" class="control-btn"><i class="material-icons">shuffle</i></button>
             <button id="prev-btn" class="control-btn"><i class="material-icons">skip_previous</i></button>
             <button id="play-pause-btn" class="control-btn"><i class="material-icons">play_arrow</i></button>
             <button id="next-btn" class="control-btn"><i class="material-icons">skip_next</i></button>
@@ -45,6 +44,18 @@
         </div>
 
         <button id="change-vibe-btn" class="vibe-btn">Change Vibe</button>
+    </div>
+
+    <div class="position-control" aria-label="Player position">
+        <button type="button" class="position-btn" data-position="tl" aria-label="Top left"></button>
+        <button type="button" class="position-btn" data-position="tc" aria-label="Top center"></button>
+        <button type="button" class="position-btn" data-position="tr" aria-label="Top right"></button>
+        <button type="button" class="position-btn" data-position="ml" aria-label="Middle left"></button>
+        <button type="button" class="position-btn active" data-position="mc" aria-label="Center"></button>
+        <button type="button" class="position-btn" data-position="mr" aria-label="Middle right"></button>
+        <button type="button" class="position-btn" data-position="bl" aria-label="Bottom left"></button>
+        <button type="button" class="position-btn" data-position="bc" aria-label="Bottom center"></button>
+        <button type="button" class="position-btn" data-position="br" aria-label="Bottom right"></button>
     </div>
 
     <script src="js/main.js"></script>

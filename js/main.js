@@ -28,6 +28,7 @@ const musicFiles = [
     "music/boombox instrumental.mp3",
     "music/city stroll.mp3",
     "music/classic.mp3",
+    "music/coffee and tapas.mp3",
     "music/coffee turntable.mp3",
     "music/crackle snap pop.mp3",
     "music/dino shuffle.mp3",
@@ -46,6 +47,7 @@ const musicFiles = [
     "music/laser eye surgery.mp3",
     "music/last day of vacation goodbyes.mp3",
     "music/last song too.mp3",
+    "music/layer cakes.mp3",
     "music/metamorphishize.mp3",
     "music/midivibes.mp3",
     "music/modem love.mp3",
@@ -54,9 +56,11 @@ const musicFiles = [
     "music/our little beach shack.mp3",
     "music/piano horn.mp3",
     "music/piano vocals.mp3",
+    "music/relatively relativity.mp3",
     "music/rhodeway.mp3",
     "music/slow fasting.mp3",
     "music/string instrument.mp3",
+    "music/sunny rain.mp3",
     "music/the news waits for no one.mp3",
     "music/the party must go on, but not like this.mp3",
     "music/tuba fish sandwich.mp3",
@@ -71,7 +75,6 @@ const vibeFiles = ["vibes/Gen-4_Turbo_Can_you_0_5x.mp4","vibes/Lo_Fi_Ski_Game_Vi
 const playPauseBtn = document.getElementById('play-pause-btn');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
-const shuffleBtn = document.getElementById('shuffle-btn');
 const volumeSlider = document.getElementById('volume-slider');
 const timerDisplay = document.getElementById('timer-display');
 const startTimerBtn = document.getElementById('start-timer-btn');
@@ -82,14 +85,44 @@ const changeVibeBtn = document.getElementById('change-vibe-btn');
 const vibeVideoBackground = document.getElementById('vibe-video-background');
 const songTitle = document.getElementById('song-title');
 const songProgressBar = document.getElementById('song-progress-bar');
+const playerCard = document.querySelector('.player-card');
 
 const audioPlayer = new Audio();
+
+// 9-position player placement
+const PLAYER_POSITIONS = {
+    tl: { left: '1rem', top: '1rem', right: 'auto', bottom: 'auto', transform: 'none' },
+    tc: { left: '50%', top: '1rem', right: 'auto', bottom: 'auto', transform: 'translateX(-50%)' },
+    tr: { left: 'auto', top: '1rem', right: '1rem', bottom: 'auto', transform: 'none' },
+    ml: { left: '1rem', top: '50%', right: 'auto', bottom: 'auto', transform: 'translateY(-50%)' },
+    mc: { left: '50%', top: '50%', right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)' },
+    mr: { left: 'auto', top: '50%', right: '1rem', bottom: 'auto', transform: 'translateY(-50%)' },
+    bl: { left: '1rem', top: 'auto', right: 'auto', bottom: '1rem', transform: 'none' },
+    bc: { left: '50%', top: 'auto', right: 'auto', bottom: '1rem', transform: 'translateX(-50%)' },
+    br: { left: 'auto', top: 'auto', right: '1rem', bottom: '1rem', transform: 'none' }
+};
+
+function setPlayerPosition(key) {
+    if (!playerCard || !PLAYER_POSITIONS[key]) return;
+    const p = PLAYER_POSITIONS[key];
+    playerCard.style.left = p.left;
+    playerCard.style.top = p.top;
+    playerCard.style.right = p.right;
+    playerCard.style.bottom = p.bottom;
+    playerCard.style.transform = p.transform;
+    document.querySelectorAll('.position-btn').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-position') === key);
+    });
+}
+
+document.querySelectorAll('.position-btn').forEach((btn) => {
+    btn.addEventListener('click', () => setPlayerPosition(btn.getAttribute('data-position')));
+});
 
 // Music
 let originalTracks = [];
 let tracks = [];
 let currentTrackIndex = 0;
-let isShuffleOn = true; // Shuffle by default
 
 // Pomodoro
 let timer;
@@ -121,24 +154,6 @@ function shuffleTracks() {
     }
 }
 
-function toggleShuffle() {
-    isShuffleOn = !isShuffleOn;
-    shuffleBtn.classList.toggle('shuffle-active', isShuffleOn);
-    if (isShuffleOn) {
-        shuffleTracks();
-        loadTrack(0);
-        if (!audioPlayer.paused) audioPlayer.play();
-        playPauseBtn.querySelector('.material-icons').textContent = 'pause';
-    } else {
-        const currentUrl = tracks[currentTrackIndex].url;
-        tracks = [...originalTracks];
-        const idx = tracks.findIndex(t => t.url === currentUrl);
-        loadTrack(idx >= 0 ? idx : 0);
-        if (!audioPlayer.paused) audioPlayer.play();
-        playPauseBtn.querySelector('.material-icons').textContent = 'pause';
-    }
-}
-
 function loadPlaylist() {
     if (!musicFiles || musicFiles.length === 0) {
         console.error("No music files found.");
@@ -150,7 +165,6 @@ function loadPlaylist() {
     }));
 
     shuffleTracks();
-    shuffleBtn.classList.add('shuffle-active');
     const startingTrackIndex = Math.floor(Math.random() * tracks.length);
     loadTrack(startingTrackIndex);
 }
@@ -320,7 +334,6 @@ audioPlayer.addEventListener('ended', nextTrack);
 playPauseBtn.addEventListener('click', playPauseTrack);
 prevBtn.addEventListener('click', prevTrack);
 nextBtn.addEventListener('click', nextTrack);
-shuffleBtn.addEventListener('click', toggleShuffle);
 volumeSlider.addEventListener('input', setVolume);
 startTimerBtn.addEventListener('click', () => {
     if (isTimerRunning) {
